@@ -216,63 +216,53 @@
                 max-height: none;
             }
         }
-        @media print {
-            @page {
-                size: A4;
-                margin: 0;
-            }
-            
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .form-section, .preview-header button {
-                display: none !important;
-            }
+     @media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
 
-            .preview-header {
-                display: block !important;
-            }
+    body {
+        background: white;
+        padding: 0;
+    }
 
-            .container {
-                display: block;
-                padding: 0;
-                margin: 0;
-            }
+    .container,
+    .form-section,
+    .preview-header button,
+    .preview-scroll-container {
+        display: none !important;
+    }
 
-            .preview-container {
-                position: static;
-                padding: 0;
-                max-height: none;
-                overflow: visible;
-                box-shadow: none;
-                border-radius: 0;
-            }
+    .preview-container {
+        position: static;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        overflow: visible;
+    }
 
-            #resume-preview {
-                width: 210mm;
-                min-height: 297mm;
-                padding: 20mm;
-                margin: 0;
-                border: none;
-                border-radius: 0;
-                box-shadow: none;
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
+    #resume-preview {
+        display: block !important;
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 20mm;
+        border: none;
+        box-shadow: none;
+        background: white;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        break-inside: avoid;
+    }
 
-            .preview-section {
-                break-inside: avoid;
-            }
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
 
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
-    </style>
-</head>
 <body>
     <div class="container">
         <!-- Form Section -->
