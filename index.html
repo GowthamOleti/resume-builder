@@ -222,14 +222,14 @@
         size: A4;
         margin: 0;
     }
-    
+
     body {
         background: white;
         padding: 0;
-        color: #000000 !important;
+        color: #000 !important;
     }
-    
-    .form-section, button, .card {
+
+    .form-section, button {
         display: none !important;
     }
 
@@ -249,10 +249,10 @@
     }
 
     #resume-preview {
-        width: 210mm;
-        min-height: 297mm;
-        padding: 20mm;
-        margin: 0;
+        width: 210mm; /* A4 width */
+        min-height: 297mm; /* A4 height */
+        padding: 20mm; /* Standard margin */
+        margin: 0 auto;
         border: none;
         border-radius: 0;
         box-shadow: none;
@@ -262,21 +262,16 @@
 
     .preview-header,
     .preview-section {
-        display: block;
-        color: #000000 !important;
+        display: block !important;
+        color: #000 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
 
-    .preview-section {
-        break-inside: avoid;
-    }
-
-    .skill-tag {
-        background: rgba(0, 0, 0, 0.1) !important;
-        color: #000000 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+    .preview-header h1,
+    .preview-header p {
+        font-size: 16pt;
+        color: #000 !important;
     }
 }
 
