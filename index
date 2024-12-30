@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            padding: 0;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: minmax(500px, 1fr) auto;
+            gap: 32px;
+            padding: 32px;
+            align-items: start;
+        }
+
+        .form-section {
+            max-width: 800px;
+        }
+
+        .preview-container {
+            position: sticky;
+            top: 32px;
+            padding-bottom: 32px;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            letter-spacing: -0.015em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease;
+            color: #1d1d1f;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+        }
+
+        button:hover {
+            background-color: #333;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .experience-item, .education-item {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        /* Resume Preview Styles */
+        #resume-preview {
+            width: 210mm;  /* A4 width */
+            min-height: 297mm;  /* A4 height */
+            padding: 20mm;  /* Standard margin */
+            margin: 0 auto;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 10pt;  /* Base font size for content */
+            line-height: 1.4;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 20pt;
+        }
+
+        .preview-header h1 {
+            font-size: 24pt;
+            margin-bottom: 8pt;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            color: #1d1d1f;
+        }
+
+        .preview-header p {
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #424245;
+        }
+
+        .preview-section {
+            margin-bottom: 16pt;
+        }
+
+        .preview-section h2 {
+            font-size: 14pt;
+            border-bottom: 1pt solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 12pt;
+            padding-bottom: 4pt;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            color: #1d1d1f;
+        }
+
+        .preview-section p {
+            font-size: 10pt;
+            line-height: 1.4;
+            margin-bottom: 8pt;
+            color: #424245;
+        }
+
+        .skill-tag {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Print styles */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-container {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .form-section, button, .card, .preview-header {
+                display: none !important;
+            }
+
+            .container {
+                display: block;
+                padding: 0;
+                margin: 0;
+            }
+
+            .preview-container {
+                position: static;
+                padding: 0;
+                max-height: none;
+                overflow: visible;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            #resume-preview {
+                width: 210mm;
+                min-height: 297mm;
+                padding: 20mm;
+                margin: 0;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .preview-section {
+                break-inside: avoid;
+            }
+
+            /* Ensure proper color printing */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="card">
+                <h2 class="section-title">Personal Information</h2>
+                <div class="form-grid">
+                    <input type="text" id="name" placeholder="Full Name">
+                    <input type="email" id="email" placeholder="Email">
+                    <input type="tel" id="phone" placeholder="Phone">
+                    <input type="text" id="location" placeholder="Location">
+                    <input type="url" id="linkedin" placeholder="LinkedIn URL">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Professional Summary</h2>
+                <textarea id="summary" placeholder="Write a brief professional summary..."></textarea>
+            </div>
+
+            <div class="card" id="experience-section">
+                <h2 class="section-title">Work Experience</h2>
+                <div id="experience-items"></div>
+                <button onclick="addExperience()">Add Experience</button>
+            </div>
+
+            <div class="card" id="education-section">
+                <h2 class="section-title">Education</h2>
+                <div id="education-items"></div>
+                <button onclick="addEducation()">Add Education</button>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Skills</h2>
+                <div id="skills-items" class="skills-grid"></div>
+                <button onclick="addSkill()">Add Skill</button>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-container">
+            <div class="preview-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 class="section-title" style="margin: 0; padding: 0; border: none;">Resume Preview</h2>
+                    <button onclick="window.print()">Save as PDF</button>
+                </div>
+            </div>
+            <div class="preview-scroll-container">
+                <div id="resume-preview"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let formData = {
+            personalInfo: {
+                name: '',
+                email: '',
+                phone: '',
+                location: '',
+                linkedin: ''
+            },
+            summary: '',
+            experience: [],
+            education: [],
+            skills: []
+        };
+
+        // Initialize form
+        function init() {
+            // Add event listeners for personal info
+            ['name', 'email', 'phone', 'location', 'linkedin'].forEach(id => {
+                const element = document.getElementById(id);
+                element.addEventListener('input', updatePersonalInfo);
+                element.addEventListener('change', updatePersonalInfo);
+            });
+
+            // Add event listener for summary
+            const summaryElement = document.getElementById('summary');
+            summaryElement.addEventListener('input', updateSummary);
+            summaryElement.addEventListener('change', updateSummary);
+
+            // Add initial experience, education, and skill fields
+            addExperience();
+            addEducation();
+            addSkill();
+
+            updatePreview();
+        }
+
+        function updatePersonalInfo(e) {
+            formData.personalInfo[e.target.id] = e.target.value;
+            updatePreview();
+        }
+
+        function updateSummary(e) {
+            formData.summary = e.target.value;
+            updatePreview();
+        }
+
+        function addExperience() {
+            const experienceDiv = document.createElement('div');
+            experienceDiv.className = 'experience-item';
+            experienceDiv.innerHTML = `
+                <div class="form-grid">
+                    <div class="input-group">
+                        <input type="text" 
+                               class="experience-input" 
+                               data-field="title" 
+                               placeholder="Job Title" 
+                               oninput="updateExperience(this)">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" 
+                               class="experience-input" 
+                               data-field="company" 
+                               placeholder="Company" 
+                               oninput="updateExperience(this)">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" 
+                               class="experience-input" 
+                               data-field="location" 
+                               placeholder="Location" 
+                               oninput="updateExperience(this)">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" 
+                               class="experience-input" 
+                               data-field="startDate" 
+                               placeholder="Start Date" 
+                               oninput="updateExperience(this)">
+                        <input type="text" 
+                               class="experience-input" 
+                               data-field="endDate" 
+                               placeholder="End Date" 
+                               oninput="updateExperience(this)">
+                    </div>
+                </div>
+                <textarea 
+                    class="experience-input" 
+                    data-field="description" 
+                    placeholder="Job Description" 
+                    oninput="updateExperience(this)"></textarea>
+            `;
+            document.getElementById('experience-items').appendChild(experienceDiv);
+            
+            formData.experience.push({
+                title: '',
+                company: '',
+                location: '',
+                startDate: '',
+                endDate: '',
+                description: ''
+            });
+            
+            updatePreview();
+        }
+
+        function updateExperience(element) {
+            const experienceItem = element.closest('.experience-item');
+            const index = Array.from(document.getElementsByClassName('experience-item')).indexOf(experienceItem);
+            const field = element.dataset.field;
+            
+            if (index > -1 && field) {
+                formData.experience[index][field] = element.value;
+                updatePreview();
+            }
+        }
+
+        function addEducation() {
+            const educationDiv = document.createElement('div');
+            educationDiv.className = 'education-item';
+            educationDiv.innerHTML = `
+                <div class="form-grid">
+                    <input type="text" placeholder="Degree" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+                    <input type="text" placeholder="School" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+                    <input type="text" placeholder="Location" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+                    <input type="text" placeholder="Graduation Date" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+                    <input type="text" placeholder="GPA" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+                </div>
+            `;
+            document.getElementById('education-items').appendChild(educationDiv);
+            formData.education.push({
+                degree: '',
+                school: '',
+                location: '',
+                graduationDate: '',
+                gpa: ''
+            });
+            updatePreview();
+        }
+
+        function updateEducation(element) {
+            const index = Array.from(element.closest('.education-item').parentNode.children).indexOf(element.closest('.education-item'));
+            const field = element.placeholder.toLowerCase().replace(' ', '');
+            formData.education[index][field] = element.value;
+            updatePreview();
+        }
+
+        function addSkill() {
+            const skillInput = document.createElement('input');
+            skillInput.type = 'text';
+            skillInput.placeholder = 'Skill';
+            skillInput.addEventListener('input', updateSkill); // Changed from 'change' to 'input'
+            document.getElementById('skills-items').appendChild(skillInput);
+            formData.skills.push('');
+            updatePreview();
+        }
+
+        function updateSkill(e) {
+            const index = Array.from(e.target.parentNode.children).indexOf(e.target);
+            formData.skills[index] = e.target.value;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('resume-preview');
+            preview.innerHTML = `
+                <div class="preview-header">
+                    <h1>${formData.personalInfo.name}</h1>
+                    <p>${formData.personalInfo.email} ${formData.personalInfo.phone ? '| ' + formData.personalInfo.phone : ''}</p>
+                    <p>${formData.personalInfo.location} ${formData.personalInfo.linkedin ? '| ' + formData.personalInfo.linkedin : ''}</p>
+                </div>
+
+                ${formData.summary ? `
+                <div class="preview-section">
+                    <h2>Professional Summary</h2>
+                    <p>${formData.summary}</p>
+                </div>
+                ` : ''}
+
+                ${formData.experience.some(exp => exp.title || exp.company) ? `
+                <div class="preview-section">
+                    <h2>Experience</h2>
+                    ${formData.experience.map(exp => {
+                        if (!exp.title && !exp.company) return '';
+                        return `
+                        <div style="margin-bottom: 16pt;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4pt;">
+                                <strong style="font-size: 11pt; color: #1d1d1f;">
+                                    ${exp.title || ''}
+                                </strong>
+                                <span style="font-size: 10pt; color: #424245;">
+                                    ${exp.startDate || ''} ${exp.startDate || exp.endDate ? '–' : ''} ${exp.endDate || ''}
+                                </span>
+                            </div>
+                            <div style="font-size: 10pt; color: #424245; margin-bottom: 4pt;">
+                                ${[exp.company, exp.location].filter(Boolean).join(', ')}
+                            </div>
+                            ${exp.description ? `
+                            <p style="font-size: 10pt; line-height: 1.4; color: #424245; white-space: pre-line; margin-top: 4pt;">
+                                ${exp.description}
+                            </p>
+                            ` : ''}
+                        </div>
+                    `}).join('')}
+                </div>
+                ` : ''}
+
+                ${formData.education.some(edu => edu.degree || edu.school) ? `
+                <div class="preview-section">
+                    <h2>Education</h2>
+                    ${formData.education.map(edu => edu.degree || edu.school ? `
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong>${edu.degree}</strong>
+                                <span>${edu.graduationDate}</span>
+                            </div>
+                            <div>${edu.school}${edu.location ? ', ' + edu.location : ''}</div>
+                            ${edu.gpa ? `<div>GPA: ${edu.gpa}</div>` : ''}
+                        </div>
+                    ` : '').join('')}
+                </div>
+                ` : ''}
+
+                ${formData.skills.some(skill => skill) ? `
+                <div class="preview-section">
+                    <h2>Skills</h2>
+                    <div>
+                        ${formData.skills.filter(Boolean).map(skill => `
+                            <span class="skill-tag">${skill}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // Initialize the form when the page loads
+        init();
+    </script>
+</body>
+</html>
