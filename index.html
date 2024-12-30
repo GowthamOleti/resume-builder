@@ -624,77 +624,78 @@
         }
 
         function updatePreview() {
-            const preview = document.getElementById('resume-preview');
-            preview.innerHTML = `
-                <div class="preview-header">
-                    <h1>${formData.personalInfo.name}</h1>
-                    <p>${formData.personalInfo.email} ${formData.personalInfo.phone ? '| ' + formData.personalInfo.phone : ''}</p>
-                    <p>${formData.personalInfo.location} ${formData.personalInfo.linkedin ? '| ' + formData.personalInfo.linkedin : ''}</p>
-                </div>
+    const preview = document.getElementById('resume-preview');
+    preview.innerHTML = `
+        <div class="preview-header">
+            <h1>${formData.personalInfo.name || ''}</h1>
+            <p>${formData.personalInfo.email || ''} ${formData.personalInfo.phone ? '| ' + formData.personalInfo.phone : ''}</p>
+            <p>${formData.personalInfo.location || ''} ${formData.personalInfo.linkedin ? '| ' + formData.personalInfo.linkedin : ''}</p>
+        </div>
 
-                ${formData.summary ? `
-                <div class="preview-section">
-                    <h2>Professional Summary</h2>
-                    <p>${formData.summary}</p>
-                </div>
-                ` : ''}
+        ${formData.summary ? `
+        <div class="preview-section">
+            <h2>Professional Summary</h2>
+            <p>${formData.summary}</p>
+        </div>
+        ` : ''}
 
-                ${formData.experience.some(exp => exp.title || exp.company) ? `
-                <div class="preview-section">
-                    <h2>Experience</h2>
-                    ${formData.experience.map(exp => {
-                        if (!exp.title && !exp.company) return '';
-                        return `
-                        <div style="margin-bottom: 16pt;">
-                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4pt;">
-                                <strong style="font-size: 11pt; color: #1d1d1f;">
-                                    ${exp.title || ''}
-                                </strong>
-                                <span style="font-size: 10pt; color: #424245;">
-                                    ${exp.startDate || ''} ${exp.startDate || exp.endDate ? '–' : ''} ${exp.endDate || ''}
-                                </span>
-                            </div>
-                            <div style="font-size: 10pt; color: #424245; margin-bottom: 4pt;">
-                                ${[exp.company, exp.location].filter(Boolean).join(', ')}
-                            </div>
-                            ${exp.description ? `
-                            <p style="font-size: 10pt; line-height: 1.4; color: #424245; white-space: pre-line; margin-top: 4pt;">
-                                ${exp.description}
-                            </p>
-                            ` : ''}
-                        </div>
-                    `}).join('')}
-                </div>
-                ` : ''}
-
-                ${formData.education.some(edu => edu.degree || edu.school) ? `
-                <div class="preview-section">
-                    <h2>Education</h2>
-                    ${formData.education.map(edu => edu.degree || edu.school ? `
-                        <div style="margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <strong>${edu.degree}</strong>
-                                <span>${edu.graduationDate}</span>
-                            </div>
-                            <div>${edu.school}${edu.location ? ', ' + edu.location : ''}</div>
-                            ${edu.gpa ? `<div>GPA: ${edu.gpa}</div>` : ''}
-                        </div>
-                    ` : '').join('')}
-                </div>
-                ` : ''}
-
-                ${formData.skills.some(skill => skill) ? `
-                <div class="preview-section">
-                    <h2>Skills</h2>
-                    <div>
-                        ${formData.skills.filter(Boolean).map(skill => `
-                            <span class="skill-tag">${skill}</span>
-                        `).join('')}
+        ${formData.experience.some(exp => exp.title || exp.company) ? `
+        <div class="preview-section">
+            <h2>Experience</h2>
+            ${formData.experience.map(exp => {
+                if (!exp.title && !exp.company) return '';
+                return `
+                <div style="margin-bottom: 16pt;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4pt;">
+                        <strong style="font-size: 11pt; color: #1d1d1f;">
+                            ${exp.title || ''}
+                        </strong>
+                        <span style="font-size: 10pt; color: #424245;">
+                            ${exp.startDate || ''} ${exp.startDate || exp.endDate ? '–' : ''} ${exp.endDate || ''}
+                        </span>
                     </div>
+                    <div style="font-size: 10pt; color: #424245; margin-bottom: 4pt;">
+                        ${[exp.company, exp.location].filter(Boolean).join(', ')}
+                    </div>
+                    ${exp.description ? `
+                    <p style="font-size: 10pt; line-height: 1.4; color: #424245; white-space: pre-line; margin-top: 4pt;">
+                        ${exp.description}
+                    </p>
+                    ` : ''}
                 </div>
-                ` : ''}
-            `;
-        }
+            `}).join('')}
+        </div>
+        ` : ''}
+
+        ${formData.education.some(edu => edu.degree || edu.school) ? `
+        <div class="preview-section">
+            <h2>Education</h2>
+            ${formData.education.map(edu => edu.degree || edu.school ? `
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>${edu.degree}</strong>
+                        <span>${edu.graduationDate}</span>
+                    </div>
+                    <div>${edu.school}${edu.location ? ', ' + edu.location : ''}</div>
+                    ${edu.gpa ? `<div>GPA: ${edu.gpa}</div>` : ''}
+                </div>
+            ` : '').join('')}
+        </div>
+        ` : ''}
+
+        ${formData.skills.some(skill => skill) ? `
+        <div class="preview-section">
+            <h2>Skills</h2>
+            <div>
+                ${formData.skills.filter(Boolean).map(skill => `
+                    <span class="skill-tag">${skill}</span>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+    `;
+}
+
 
         // Initialize the form when the page loads
         init();
