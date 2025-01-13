@@ -311,6 +311,11 @@
                 <button onclick="addSkill()">Add Skill</button>
             </div>
         </div>
+<div class="card" id="projects-section">
+    <h2 class="section-title">Projects</h2>
+    <div id="project-items"></div>
+    <button onclick="addProject()">Add Project</button>
+</div>
 
         <!-- Preview Section -->
         <div class="preview-container">
@@ -327,243 +332,221 @@
     </div>
 
     <script>
-        let formData = {
-            personalInfo: {
-                name: '',
-                email: '',
-                phone: '',
-                location: '',
-                linkedin: ''
-            },
-            summary: '',
-            experience: [],
-            education: [],
-            skills: []
-        };
+       let formData = {
+    personalInfo: {
+        name: '',
+        email: '',
+        phone: '',
+        location: '',
+        linkedin: ''
+    },
+    summary: '',
+    experience: [],
+    education: [],
+    skills: [],
+    projects: [] // New section for projects
+};
 
-        // Initialize form
-        function init() {
-            // Add event listeners for personal info
-            ['name', 'email', 'phone', 'location', 'linkedin'].forEach(id => {
-                const element = document.getElementById(id);
-                element.addEventListener('input', updatePersonalInfo);
-                element.addEventListener('change', updatePersonalInfo);
-            });
+// Initialize form
+function init() {
+    // Add event listeners for personal info
+    ['name', 'email', 'phone', 'location', 'linkedin'].forEach(id => {
+        const element = document.getElementById(id);
+        element.addEventListener('input', updatePersonalInfo);
+        element.addEventListener('change', updatePersonalInfo);
+    });
 
-            // Add event listener for summary
-            const summaryElement = document.getElementById('summary');
-            summaryElement.addEventListener('input', updateSummary);
-            summaryElement.addEventListener('change', updateSummary);
+    // Add event listener for summary
+    const summaryElement = document.getElementById('summary');
+    summaryElement.addEventListener('input', updateSummary);
+    summaryElement.addEventListener('change', updateSummary);
 
-            // Add initial experience, education, and skill fields
-            addExperience();
-            addEducation();
-            addSkill();
+    // Add initial sections
+    addExperience();
+    addEducation();
+    addSkill();
+    addProject(); // Initialize projects
 
-            updatePreview();
-        }
+    updatePreview();
+}
 
-        function updatePersonalInfo(e) {
-            formData.personalInfo[e.target.id] = e.target.value;
-            updatePreview();
-        }
+function updatePersonalInfo(e) {
+    formData.personalInfo[e.target.id] = e.target.value;
+    updatePreview();
+}
 
-        function updateSummary(e) {
-            formData.summary = e.target.value;
-            updatePreview();
-        }
+function updateSummary(e) {
+    formData.summary = e.target.value;
+    updatePreview();
+}
 
-        function addExperience() {
-            const experienceDiv = document.createElement('div');
-            experienceDiv.className = 'experience-item';
-            experienceDiv.innerHTML = `
-                <div class="form-grid">
-                    <div class="input-group">
-                        <input type="text" 
-                               class="experience-input" 
-                               data-field="title" 
-                               placeholder="Job Title" 
-                               oninput="updateExperience(this)">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" 
-                               class="experience-input" 
-                               data-field="company" 
-                               placeholder="Company" 
-                               oninput="updateExperience(this)">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" 
-                               class="experience-input" 
-                               data-field="location" 
-                               placeholder="Location" 
-                               oninput="updateExperience(this)">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <input type="text" 
-                               class="experience-input" 
-                               data-field="startDate" 
-                               placeholder="Start Date" 
-                               oninput="updateExperience(this)">
-                        <input type="text" 
-                               class="experience-input" 
-                               data-field="endDate" 
-                               placeholder="End Date" 
-                               oninput="updateExperience(this)">
-                    </div>
+// Add Experience
+function addExperience() {
+    const experienceDiv = document.createElement('div');
+    experienceDiv.className = 'experience-item';
+    experienceDiv.innerHTML = `
+        <div class="form-grid">
+            <input type="text" class="experience-input" data-field="title" placeholder="Job Title" oninput="updateExperience(this)">
+            <input type="text" class="experience-input" data-field="company" placeholder="Company" oninput="updateExperience(this)">
+            <input type="text" class="experience-input" data-field="location" placeholder="Location" oninput="updateExperience(this)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <input type="text" class="experience-input" data-field="startDate" placeholder="Start Date" oninput="updateExperience(this)">
+                <input type="text" class="experience-input" data-field="endDate" placeholder="End Date" oninput="updateExperience(this)">
+            </div>
+        </div>
+        <textarea class="experience-input" data-field="description" placeholder="Job Description" oninput="updateExperience(this)"></textarea>
+    `;
+    document.getElementById('experience-items').appendChild(experienceDiv);
+    formData.experience.push({ title: '', company: '', location: '', startDate: '', endDate: '', description: '' });
+    updatePreview();
+}
+
+function updateExperience(element) {
+    const experienceItem = element.closest('.experience-item');
+    const index = Array.from(document.getElementsByClassName('experience-item')).indexOf(experienceItem);
+    const field = element.dataset.field;
+    if (index > -1 && field) {
+        formData.experience[index][field] = element.value;
+        updatePreview();
+    }
+}
+
+// Add Education
+function addEducation() {
+    const educationDiv = document.createElement('div');
+    educationDiv.className = 'education-item';
+    educationDiv.innerHTML = `
+        <div class="form-grid">
+            <input type="text" placeholder="Degree" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+            <input type="text" placeholder="School" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+            <input type="text" placeholder="Location" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+            <input type="text" placeholder="Graduation Date" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+            <input type="text" placeholder="GPA" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+        </div>
+    `;
+    document.getElementById('education-items').appendChild(educationDiv);
+    formData.education.push({ degree: '', school: '', location: '', graduationDate: '', gpa: '' });
+    updatePreview();
+}
+
+function updateEducation(element) {
+    const index = Array.from(element.closest('.education-item').parentNode.children).indexOf(element.closest('.education-item'));
+    const field = element.placeholder.toLowerCase().replace(' ', '');
+    formData.education[index][field] = element.value;
+    updatePreview();
+}
+
+// Add Skills
+function addSkill() {
+    const skillInput = document.createElement('input');
+    skillInput.type = 'text';
+    skillInput.placeholder = 'Skill';
+    skillInput.addEventListener('input', updateSkill);
+    document.getElementById('skills-items').appendChild(skillInput);
+    formData.skills.push('');
+    updatePreview();
+}
+
+function updateSkill(e) {
+    const index = Array.from(e.target.parentNode.children).indexOf(e.target);
+    formData.skills[index] = e.target.value;
+    updatePreview();
+}
+
+// Add Projects
+function addProject() {
+    const projectDiv = document.createElement('div');
+    projectDiv.className = 'experience-item'; // Reuse the same style
+    projectDiv.innerHTML = `
+        <div class="form-grid">
+            <input type="text" class="project-input" data-field="name" placeholder="Project Name" oninput="updateProject(this)">
+            <input type="url" class="project-input" data-field="link" placeholder="Project Link (URL)" oninput="updateProject(this)">
+        </div>
+        <textarea class="project-input" data-field="description" placeholder="Project Description" oninput="updateProject(this)"></textarea>
+    `;
+    document.getElementById('project-items').appendChild(projectDiv);
+    formData.projects.push({ name: '', link: '', description: '' });
+    updatePreview();
+}
+
+function updateProject(element) {
+    const projectItem = element.closest('.experience-item');
+    const index = Array.from(document.getElementsByClassName('experience-item')).indexOf(projectItem);
+    const field = element.dataset.field;
+    if (index > -1 && field) {
+        formData.projects[index][field] = element.value;
+        updatePreview();
+    }
+}
+
+// Update Preview
+function updatePreview() {
+    const preview = document.getElementById('resume-preview');
+    preview.innerHTML = `
+        <div class="preview-header">
+            <h1>${formData.personalInfo.name}</h1>
+            <p>${formData.personalInfo.email} ${formData.personalInfo.phone ? '| ' + formData.personalInfo.phone : ''}</p>
+            <p>${formData.personalInfo.location} ${formData.personalInfo.linkedin ? '| ' + formData.personalInfo.linkedin : ''}</p>
+        </div>
+
+        ${formData.summary ? `
+        <div class="preview-section">
+            <h2>Professional Summary</h2>
+            <p>${formData.summary}</p>
+        </div>
+        ` : ''}
+
+        ${formData.experience.some(exp => exp.title || exp.company) ? `
+        <div class="preview-section">
+            <h2>Experience</h2>
+            ${formData.experience.map(exp => `
+                <div style="margin-bottom: 16pt;">
+                    <strong>${exp.title}</strong> at ${exp.company} (${exp.startDate} - ${exp.endDate})<br>
+                    ${exp.location ? exp.location + '<br>' : ''}
+                    ${exp.description ? `<p>${exp.description}</p>` : ''}
                 </div>
-                <textarea 
-                    class="experience-input" 
-                    data-field="description" 
-                    placeholder="Job Description" 
-                    oninput="updateExperience(this)"></textarea>
-            `;
-            document.getElementById('experience-items').appendChild(experienceDiv);
-            
-            formData.experience.push({
-                title: '',
-                company: '',
-                location: '',
-                startDate: '',
-                endDate: '',
-                description: ''
-            });
-            
-            updatePreview();
-        }
+            `).join('')}
+        </div>
+        ` : ''}
 
-        function updateExperience(element) {
-            const experienceItem = element.closest('.experience-item');
-            const index = Array.from(document.getElementsByClassName('experience-item')).indexOf(experienceItem);
-            const field = element.dataset.field;
-            
-            if (index > -1 && field) {
-                formData.experience[index][field] = element.value;
-                updatePreview();
-            }
-        }
-
-        function addEducation() {
-            const educationDiv = document.createElement('div');
-            educationDiv.className = 'education-item';
-            educationDiv.innerHTML = `
-                <div class="form-grid">
-                    <input type="text" placeholder="Degree" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
-                    <input type="text" placeholder="School" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
-                    <input type="text" placeholder="Location" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
-                    <input type="text" placeholder="Graduation Date" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
-                    <input type="text" placeholder="GPA" onchange="updateEducation(this)" onkeyup="updateEducation(this)">
+        ${formData.education.some(edu => edu.degree || edu.school) ? `
+        <div class="preview-section">
+            <h2>Education</h2>
+            ${formData.education.map(edu => `
+                <div style="margin-bottom: 16pt;">
+                    <strong>${edu.degree}</strong> from ${edu.school}<br>
+                    ${edu.location ? edu.location + '<br>' : ''}
+                    Graduation Date: ${edu.graduationDate}<br>
+                    ${edu.gpa ? `GPA: ${edu.gpa}` : ''}
                 </div>
-            `;
-            document.getElementById('education-items').appendChild(educationDiv);
-            formData.education.push({
-                degree: '',
-                school: '',
-                location: '',
-                graduationDate: '',
-                gpa: ''
-            });
-            updatePreview();
-        }
+            `).join('')}
+        </div>
+        ` : ''}
 
-        function updateEducation(element) {
-            const index = Array.from(element.closest('.education-item').parentNode.children).indexOf(element.closest('.education-item'));
-            const field = element.placeholder.toLowerCase().replace(' ', '');
-            formData.education[index][field] = element.value;
-            updatePreview();
-        }
-
-        function addSkill() {
-            const skillInput = document.createElement('input');
-            skillInput.type = 'text';
-            skillInput.placeholder = 'Skill';
-            skillInput.addEventListener('input', updateSkill); // Changed from 'change' to 'input'
-            document.getElementById('skills-items').appendChild(skillInput);
-            formData.skills.push('');
-            updatePreview();
-        }
-
-        function updateSkill(e) {
-            const index = Array.from(e.target.parentNode.children).indexOf(e.target);
-            formData.skills[index] = e.target.value;
-            updatePreview();
-        }
-
-        function updatePreview() {
-            const preview = document.getElementById('resume-preview');
-            preview.innerHTML = `
-                <div class="preview-header">
-                    <h1>${formData.personalInfo.name}</h1>
-                    <p>${formData.personalInfo.email} ${formData.personalInfo.phone ? '| ' + formData.personalInfo.phone : ''}</p>
-                    <p>${formData.personalInfo.location} ${formData.personalInfo.linkedin ? '| ' + formData.personalInfo.linkedin : ''}</p>
+        ${formData.projects.some(proj => proj.name || proj.link || proj.description) ? `
+        <div class="preview-section">
+            <h2>Projects</h2>
+            ${formData.projects.map(proj => `
+                <div style="margin-bottom: 16pt;">
+                    <strong>${proj.name}</strong> ${proj.link ? `<a href="${proj.link}" target="_blank">(View Project)</a>` : ''}<br>
+                    ${proj.description ? `<p>${proj.description}</p>` : ''}
                 </div>
+            `).join('')}
+        </div>
+        ` : ''}
 
-                ${formData.summary ? `
-                <div class="preview-section">
-                    <h2>Professional Summary</h2>
-                    <p>${formData.summary}</p>
-                </div>
-                ` : ''}
+        ${formData.skills.some(skill => skill) ? `
+        <div class="preview-section">
+            <h2>Skills</h2>
+            <div>${formData.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}</div>
+        </div>
+        ` : ''}
+    `;
+}
 
-                ${formData.experience.some(exp => exp.title || exp.company) ? `
-                <div class="preview-section">
-                    <h2>Experience</h2>
-                    ${formData.experience.map(exp => {
-                        if (!exp.title && !exp.company) return '';
-                        return `
-                        <div style="margin-bottom: 16pt;">
-                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4pt;">
-                                <strong style="font-size: 11pt; color: #1d1d1f;">
-                                    ${exp.title || ''}
-                                </strong>
-                                <span style="font-size: 10pt; color: #424245;">
-                                    ${exp.startDate || ''} ${exp.startDate || exp.endDate ? '–' : ''} ${exp.endDate || ''}
-                                </span>
-                            </div>
-                            <div style="font-size: 10pt; color: #424245; margin-bottom: 4pt;">
-                                ${[exp.company, exp.location].filter(Boolean).join(', ')}
-                            </div>
-                            ${exp.description ? `
-                            <p style="font-size: 10pt; line-height: 1.4; color: #424245; white-space: pre-line; margin-top: 4pt;">
-                                ${exp.description}
-                            </p>
-                            ` : ''}
-                        </div>
-                    `}).join('')}
-                </div>
-                ` : ''}
+// Initialize the form on page load
+init();
 
-                ${formData.education.some(edu => edu.degree || edu.school) ? `
-                <div class="preview-section">
-                    <h2>Education</h2>
-                    ${formData.education.map(edu => edu.degree || edu.school ? `
-                        <div style="margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <strong>${edu.degree}</strong>
-                                <span>${edu.graduationDate}</span>
-                            </div>
-                            <div>${edu.school}${edu.location ? ', ' + edu.location : ''}</div>
-                            ${edu.gpa ? `<div>GPA: ${edu.gpa}</div>` : ''}
-                        </div>
-                    ` : '').join('')}
-                </div>
-                ` : ''}
-
-                ${formData.skills.some(skill => skill) ? `
-                <div class="preview-section">
-                    <h2>Skills</h2>
-                    <div>
-                        ${formData.skills.filter(Boolean).map(skill => `
-                            <span class="skill-tag">${skill}</span>
-                        `).join('')}
-                    </div>
-                </div>
-                ` : ''}
-            `;
-        }
-
-        // Initialize the form when the page loads
-        init();
     </script>
 </body>
 </html>
