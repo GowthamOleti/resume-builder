@@ -150,6 +150,11 @@
             line-height: 1.4;
         }
 
+        .preview-header {
+            text-align: center;
+            margin-bottom: 20pt;
+        }
+
         .preview-header h1 {
             font-size: 24pt;
             margin-bottom: 8pt;
@@ -176,6 +181,13 @@
             font-weight: 600;
             letter-spacing: -0.015em;
             color: #1d1d1f;
+        }
+
+        .preview-section p {
+            font-size: 10pt;
+            line-height: 1.4;
+            margin-bottom: 8pt;
+            color: #424245;
         }
 
         .skill-tag {
@@ -263,12 +275,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Title and Save PDF Button -->
-        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h1 style="font-size: 32px; font-weight: bold;">Resume Builder</h1>
-            <button onclick="window.print()">Save as PDF</button>
-        </div>
-
         <!-- Form Section -->
         <div class="form-section">
             <div class="card">
@@ -281,16 +287,44 @@
                     <input type="url" id="linkedin" placeholder="LinkedIn URL">
                 </div>
             </div>
-            <!-- Other Form Fields -->
+
+            <div class="card">
+                <h2 class="section-title">Professional Summary</h2>
+                <textarea id="summary" placeholder="Write a brief professional summary..."></textarea>
+            </div>
+
+            <div class="card" id="experience-section">
+                <h2 class="section-title">Work Experience</h2>
+                <div id="experience-items"></div>
+                <button onclick="addExperience()">Add Experience</button>
+            </div>
+
+            <div class="card" id="education-section">
+                <h2 class="section-title">Education</h2>
+                <div id="education-items"></div>
+                <button onclick="addEducation()">Add Education</button>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Skills</h2>
+                <div id="skills-items" class="skills-grid"></div>
+                <button onclick="addSkill()">Add Skill</button>
+            </div>
         </div>
 
         <!-- Preview Section -->
         <div class="preview-container">
+            <div class="preview-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 class="section-title" style="margin: 0; padding: 0; border: none;">Resume Preview</h2>
+                    <button onclick="window.print()">Save as PDF</button>
+                </div>
+            </div>
             <div class="preview-scroll-container">
                 <div id="resume-preview"></div>
             </div>
         </div>
-    </div>>
+    </div>
 
     <script>
         let formData = {
